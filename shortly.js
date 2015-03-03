@@ -123,7 +123,32 @@ app.post('/signup',
 /************************************************************/
 // Write your authentication routes here
 /************************************************************/
+app.post('/login',
+  function(req,res){
+    console.log("Login requested!!");
 
+    new User({username: req.body.username})
+    .fetch().then(function(model){
+      if (!model) {
+        return res.send(404);
+      }
+      util.bcryptCompare(req.body.password, model.get('password'), function(authentication){
+        if (authentication) {
+          console.log('user is who they say they are');
+        } else {
+          return res.send(404);
+        }
+      });
+      console.log('stored pass', model.get('password'));
+      console.log('lookup username in users table', model);
+      console.log('the username', model.get('username'));
+    });
+    // Verify the user is in our users' table
+      // if user is not in users' table, we send a 404
+      // if they are in the users table, salt user's password and compare with encrypted pass
+    // show user their personal links
+    // serve session cookies to user
+});
 
 
 /************************************************************/
