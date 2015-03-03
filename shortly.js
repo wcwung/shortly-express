@@ -87,6 +87,24 @@ function(req, res) {
 });
 
 /************************************************************/
+// Signup POST Request
+/************************************************************/
+app.post('/signup',
+  function(req, res) {
+    new User({username: req.body.username})
+    .fetch().then(function(found){
+      if (found) {
+        console.log("Found it");
+      } else {
+        console.log("Write to user table..");
+      }
+    });
+  res.end();
+});
+
+
+
+/************************************************************/
 // Write your authentication routes here
 /************************************************************/
 
