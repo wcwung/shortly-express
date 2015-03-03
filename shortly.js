@@ -91,15 +91,31 @@ function(req, res) {
 /************************************************************/
 app.post('/signup',
   function(req, res) {
+    console.log("Signup requested!");
     new User({username: req.body.username})
     .fetch().then(function(found){
       if (found) {
-        console.log("Found it");
-      } else {
-        console.log("Write to user table..");
+        console.log("Uh oh, user already exists.");
+        return res.send(404);
       }
+
+      console.log("Write to user table..");
+      util.bcryptPassword(req.body.password, function(hash){
+
+        var user = new User({
+          username: req.body.username,
+          password: hash
+        });
+
+        user.save().then(function(newUser){
+          Users.add(newUser);
+          console.log(user);
+          res.send(200, newUser);
+        });
+
+      });
+
     });
-  res.end();
 });
 
 
