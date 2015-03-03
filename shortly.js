@@ -39,6 +39,12 @@ function(req, res) {
   res.render('index');
 });
 
+app.get('/signup',
+function(req, res) {
+  console.log('signup received');
+  res.render('index');
+});
+
 app.get('/links',
 function(req, res) {
   Links.reset().fetch().then(function(links) {
