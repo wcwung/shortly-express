@@ -2,16 +2,20 @@ var express = require('express');
 var util = require('./lib/utility');
 var partials = require('express-partials');
 var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
+var uuid = require('uuid');
 
 
 var db = require('./app/config');
 var Users = require('./app/collections/users');
 var User = require('./app/models/user');
+var Session = require('./app/models/session');
 var Links = require('./app/collections/links');
 var Link = require('./app/models/link');
 var Click = require('./app/models/click');
 
 var app = express();
+
 
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
@@ -20,11 +24,20 @@ app.use(partials());
 app.use(bodyParser.json());
 // Parse forms (signup/login)
 app.use(bodyParser.urlencoded({ extended: true }));
+// Parses cookies
+app.use(cookieParser('yolo5000'));
 app.use(express.static(__dirname + '/public'));
-
 
 app.get('/',
 function(req, res) {
+  console.log("Cookies ", req.signedCookies);
+  // look up uid and session token in the session table
+    // if session exists, respond with a new session cookie
+    // update the table with the new session cookie
+  // send user a new cookie
+  // new Session({})
+
+  res.cookie('key', uuid.v4(), { signed: true, maxAge: 900000, httpOnly: true });
   res.render('index');
 });
 
@@ -96,7 +109,7 @@ app.post('/signup',
     .fetch().then(function(found){
       if (found) {
         console.log("Uh oh, user already exists.");
-        return res.send(404);
+        res.send(404);
       }
 
       console.log("Write to user table..");
@@ -135,6 +148,7 @@ app.post('/login',
       util.bcryptCompare(req.body.password, model.get('password'), function(authentication){
         if (authentication) {
           console.log('user is who they say they are');
+          // return res.send(200, res.render('index'));
         } else {
           return res.send(404);
         }
