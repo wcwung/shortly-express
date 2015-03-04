@@ -56,6 +56,17 @@ db.knex.schema.hasTable('clicks').then(function(exists) {
   }
 });
 
+db.knex.schema.hasTable('sessions').then(function(exists) {
+  if (!exists) {
+    db.knex.schema.createTable('sessions', function (session) {
+      session.integer('user_id');
+      session.string('session_id', 36);
+    }).then(function (table) {
+
+    });
+  }
+});
+
 /************************************************************/
 // Add additional schema definitions below
 /************************************************************/
